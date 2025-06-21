@@ -1,12 +1,13 @@
 //src/App.tsx
- import { createContext } from 'react';
+import { createContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Landing from './app/pages/Landing';
 import Login from './app/pages/Login';
 import Register from './app/pages/Register';
 import Dashboard from './app/pages/Dashboard';
 import CourseDetail from './app/pages/CourseDetail';
-import Cart from './app/pages/cart';
+import Cart from './app/pages/Cart';
+import SectorPage from './app/pages/Sector';
 import NotFound from './app/pages/NotFound';
 import './App.css';
 
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/course/:courseId" element={<CourseDetail />} />
+        <Route path="/sector/:sectorId" element={<SectorPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

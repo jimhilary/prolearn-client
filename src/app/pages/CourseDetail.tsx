@@ -1,6 +1,6 @@
 //src/app/pages/CourseDetail.tsx
 
- import { useState, useEffect, useContext } from 'react'; // Add useContext
+import { useState, useEffect, useContext } from 'react'; // Add useContext
 import { useParams, useNavigate } from 'react-router-dom';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -41,7 +41,7 @@ export default function CourseDetailPage() {
       const existing = JSON.parse(localStorage.getItem(cartKey) || '[]') as string[];
       if (!existing.includes(courseUuid)) { // Prevent duplicates
         localStorage.setItem(cartKey, JSON.stringify([...existing, courseUuid]));
-        alert('Course added to cart successfully!');
+        alert('Course added to cart!');
       } else {
         alert('This course is already in your cart');
       }
@@ -65,45 +65,121 @@ export default function CourseDetailPage() {
   if (loading) return <div className="text-center py-12">Loading...</div>;
   if (!course) return <div className="text-center py-12">Course not found</div>;
 
-  // Rest of your component remains the same until the Cart button
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* ... previous JSX ... */}
+    <div className="min-h-screen bg-gray-100">
+      <nav className="bg-white shadow-sm mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <h1 className="text-3xl font-bold text-primary cursor-pointer" onClick={() => navigate('/dashboard')}>
+              ProLearn
+            </h1>
+            <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+              Back to Courses
+            </Button>
+          </div>
+        </div>
+      </nav>
 
-      {/* Course Purchase Card */}
-      <div className="lg:col-span-1">
-        <Card className="sticky top-8">
-          <div className="text-3xl font-bold mb-4">${course.price}</div>
-          <div className="space-y-4 mb-6">
-            <div className="flex items-center">
-              <span className="text-gray-600">👥 {course.student_no} students</span>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Course Content */}
+          <div className="lg:col-span-2">
+            <h1 className="text-4xl font-bold mb-2">{course.title}</h1>
+            <p className="text-xl text-gray-600 mb-4">{course.description}</p>
+            <div className="flex items-center space-x-4 mb-6 text-gray-700">
+              <span>
+                Created by {course.author.first_name} {course.author.last_name}
+              </span>
+              <span>|</span>
+              <span>Last updated: {new Date(course.updated).toLocaleDateString()}</span>
             </div>
-            <div className="flex items-center">
-              <span className="text-gray-600">⏱️ {course.total_duration} total length</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-gray-600">📚 {course.total_lectures} lectures</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-gray-600">🌐 {course.language}</span>
+
+            {/* Course Curriculum */}
+            <Card className="p-0">
+              <h2 className="text-2xl font-bold p-6">Course Content</h2>
+              <div className="divide-y">
+                {course.course_section.map((section, idx) => (
+                  <div key={idx} className="p-6">
+                    <h3 className="font-bold text-lg mb-3">{section.section_title}</h3>
+                    <ul className="space-y-2">
+                      {section.episode.map((ep, epIdx) => (
+                        <li key={epIdx} className="flex justify-between items-center text-gray-800">
+                          <span>- {ep.title}</span>
+                          <span className="text-sm text-gray-500">{ep.length}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Comments Section */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold mb-6">Comments</h2>
+              <Card>
+                <div className="space-y-6">
+                  {course.comments.map((comment, idx) => (
+                    <div key={idx} className="flex space-x-4">
+                      <div className="w-12 h-12 rounded-full bg-primary-light flex-shrink-0"></div>
+                      <div>
+                        <p className="font-semibold">{comment.user.first_name} {comment.user.last_name}</p>
+                        <p className="text-gray-700">{comment.message}</p>
+                        <p className="text-xs text-gray-500 mt-1">{new Date(comment.created).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 border-t pt-6">
+                  <h3 className="font-semibold mb-3">Add Your Comment</h3>
+                  <Input
+                    placeholder="Write your comment..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    className="mb-3"
+                  />
+                  <Button onClick={handleAddComment}>Submit Comment</Button>
+                </div>
+              </Card>
             </div>
           </div>
-          <Button 
-            className="w-full mb-4" 
-            onClick={() => course && addToCart(course.course_uuid)}
-          >
-            Add to Cart
-          </Button>
-          <Button 
-            variant="secondary" 
-            className="w-full" 
-            onClick={() => navigate('/checkout')}
-          >
-            Buy Now
-          </Button>
-        </Card>
-      </div>
-      {/* ... rest of your JSX ... */}
+
+          {/* Course Purchase Card */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-28">
+              <img src={course.image_url} alt={course.title} className="rounded-lg mb-4 w-full h-48 object-cover" />
+              <div className="text-4xl font-bold mb-4">${course.price}</div>
+              <Button
+                className="w-full mb-3"
+                onClick={() => course && addToCart(course.course_uuid)}
+              >
+                Add to Cart
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={() => navigate('/cart')}
+              >
+                Go to Cart
+              </Button>
+              <div className="text-sm text-gray-600 mt-6 space-y-3">
+                <div className="flex items-center">
+                  <span>👥 {course.student_no} students</span>
+                </div>
+                <div className="flex items-center">
+                  <span>⏱️ {course.total_duration} total length</span>
+                </div>
+                <div className="flex items-center">
+                  <span>📚 {course.total_lectures} lectures</span>
+                </div>
+                <div className="flex items-center">
+                  <span>🌐 {course.language}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

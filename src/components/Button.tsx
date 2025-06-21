@@ -1,10 +1,10 @@
- // src/components/Button.tsx
+// src/components/Button.tsx
 
 import { cn } from '@/lib/utils';
 import type { ButtonHTMLAttributes } from 'react';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'small' | 'medium' | 'large'; // ← ADD THIS
 };
 
@@ -28,9 +28,9 @@ export default function Button({
       className={cn(
         sizeClass,
         'rounded-xl font-semibold transition-colors duration-200',
-        variant === 'primary'
-          ? 'bg-primary text-white hover:bg-orange-500'
-          : 'bg-secondary text-white hover:bg-blue-700',
+        variant === 'primary' && 'bg-primary text-white hover:bg-orange-500',
+        variant === 'secondary' && 'bg-secondary text-white hover:bg-blue-700',
+        variant === 'ghost' && 'bg-transparent hover:bg-gray-100 text-gray-700',
         className
       )}
     />
