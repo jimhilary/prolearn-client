@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '@/services/api';
-import type { Course } from '@/services/api';
+import type { Course, SectorCoursesResponse } from '@/services/api';
 import { UserContext } from '@/App';
 import CourseCard from '@/components/CourseCard';
 import Button from '@/components/Button';
@@ -13,6 +13,8 @@ export default function SectorPage() {
   const { username } = useContext(UserContext);
 
   const [courses, setCourses] = useState<Course[]>([]);
+  const [sectorName, setSectorName] = useState<string>('');
+  const [totalStudents, setTotalStudents] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,17 +31,12 @@ export default function SectorPage() {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.getSectorCourses(uuid);
-      // The API documentation is a bit unclear here.
-      // Assuming the data is an array of courses. 
-      // If it's an object like { courses: [] }, this will need adjustment.
-      if (Array.isArray(data)) {
-        setCourses(data);
-      } else if (data && Array.isArray(data.courses)) {
-        setCourses(data.courses);
-      } else {
-        setCourses([]);
-      }
+      const data: SectorCoursesResponse = await api.getSectorCourses(uuid);
+      console.log('Sector API Response:', data); // Debug log
+      
+      setCourses(data.data);
+      setSectorName(data.sector_name);
+      setTotalStudents(data.total_students);
     } catch (err) {
       setError('Failed to load courses for this sector.');
       console.error('Failed to load sector courses:', err);
@@ -76,7 +73,13 @@ export default function SectorPage() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h2 className="text-3xl font-bold mb-8">{title}</h2>
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold mb-2">{sectorName || title}</h2>
+          {totalStudents > 0 && (
+            <p className="text-gray-600">Total students in this sector: {totalStudents.toLocaleString()}</p>
+          )}
+        </div>
+        
         {loading ? (
           <div className="text-center py-12">Loading courses...</div>
         ) : error ? (

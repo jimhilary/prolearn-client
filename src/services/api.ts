@@ -28,6 +28,13 @@ export interface Sector {
   sector_image: string;
 }
 
+// New interface for sector courses response
+export interface SectorCoursesResponse {
+  data: Course[];
+  sector_name: string;
+  total_students: number;
+}
+
 export interface CourseDetail extends Course {
   description: string;
   created: string;
@@ -57,6 +64,22 @@ export interface Comment {
   created: string;
 }
 
+// Updated cart response interface
+export interface CartResponse {
+  cart_detail: CartItem[];
+  cart_total: string;
+}
+
+export interface CartItem {
+  title: string;
+  price: string;
+  image_url: string;
+  author: {
+    first_name: string;
+    last_name: string;
+  };
+}
+
 export const api = {
   // Get homepage with featured courses by sector
   getHomepage: () => fetch(`${API_ROOT}/`).then(res => res.json()),
@@ -65,8 +88,8 @@ export const api = {
   getCourseDetail: (courseUuid: string) => 
     fetch(`${API_ROOT}/detail/${courseUuid}/`).then(res => res.json()),
 
-  // Get all courses in a specific sector
-  getSectorCourses: (sectorUuid: string) => 
+  // Get all courses in a specific sector - updated to handle the correct response format
+  getSectorCourses: (sectorUuid: string): Promise<SectorCoursesResponse> => 
     fetch(`${API_ROOT}/${sectorUuid}/`).then(res => res.json()),
 
   // Search courses
@@ -81,8 +104,8 @@ export const api = {
       body: JSON.stringify({ message })
     }),
 
-  // Get cart details
-  getCartDetails: (cartItems: string[]) => 
+  // Get cart details - updated to match the API response format
+  getCartDetails: (cartItems: string[]): Promise<CartResponse> => 
     fetch(`${API_ROOT}/cart/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

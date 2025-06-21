@@ -11,6 +11,15 @@ interface CourseCardProps {
 export default function CourseCard({ course, onAddToCart }: CourseCardProps) {
   const navigate = useNavigate();
 
+  // Debug logging
+  console.log('CourseCard rendering:', {
+    title: course.title,
+    author: course.author,
+    price: course.price,
+    image: course.image_url,
+    students: course.student_no
+  });
+
   return (
     <Card 
       className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden"
@@ -20,6 +29,10 @@ export default function CourseCard({ course, onAddToCart }: CourseCardProps) {
         src={course.image_url}
         alt={course.title}
         className="w-full h-48 object-cover"
+        onError={(e) => {
+          console.error('Image failed to load:', course.image_url);
+          e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Course+Image';
+        }}
       />
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="font-bold text-lg mb-2 flex-grow">{course.title}</h3>

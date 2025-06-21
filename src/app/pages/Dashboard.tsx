@@ -11,6 +11,7 @@ import { UserContext } from '@/App';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  
   const { username } = useContext(UserContext);
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,8 +39,23 @@ export default function Dashboard() {
     try {
       const data = await api.getHomepage();
       console.log('API Response:', data); // Log the raw API response
+      console.log('Sectors found:', data.length); // Log number of sectors
       if (Array.isArray(data)) {
         setSectors(data);
+        // Log each sector's details
+        data.forEach((sector, index) => {
+          console.log(`Sector ${index + 1}:`, {
+            title: sector.sector_title,
+            uuid: sector.sector_uuid,
+            coursesCount: sector.featured_course?.length || 0,
+            courses: sector.featured_course?.map((c: any) => ({
+              title: c.title,
+              author: c.author?.first_name + ' ' + c.author?.last_name,
+              price: c.price,
+              image: c.image_url
+            }))
+          });
+        });
       } else {
         setSectors([]);
         console.warn('Homepage data is not an array:', data);
