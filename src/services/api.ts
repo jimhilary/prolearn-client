@@ -116,3 +116,63 @@ export const api = {
   getStudyCourse: (courseUuid: string) => 
     fetch(`${API_ROOT}/study/${courseUuid}/`).then(res => res.json()),
 };
+
+const USER_API_ROOT = 'http://127.0.0.1:8000/users';
+
+// --- Token helpers ---
+export function saveToken(token: string) {
+  localStorage.setItem('auth_token', token);
+}
+export function getToken(): string | null {
+  return localStorage.getItem('auth_token');
+}
+export function clearToken() {
+  localStorage.removeItem('auth_token');
+}
+
+function authHeadersOrUndefined(): { headers: HeadersInit } | undefined {
+  const token = getToken();
+  return token ? { headers: { Authorization: `Token ${token}` } } : undefined;
+}
+
+export const userApi = {
+  // Signup
+  signup: (name: string, email: string, password: string) =>
+    fetch(`${USER_API_ROOT}/signup/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    }).then(res => res.json()),
+
+  // Login
+  login: (email: string, password: string) =>
+    fetch(`${USER_API_ROOT}/login/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    }).then(res => res.json()),
+
+  // Get profile (requires auth)
+  profile: () => {
+    const opts = authHeadersOrUndefined();
+    return fetch(`${USER_API_ROOT}/profile/`, opts).then(res => res.json());
+  },
+
+  // Get user courses (requires auth)
+  userCourses: () => {
+    const opts = authHeadersOrUndefined();
+    return fetch(`${USER_API_ROOT}/courses/`, opts).then(res => res.json());
+  },
+
+  // Auth status
+  authStatus: () => {
+    const opts = authHeadersOrUndefined();
+    return fetch(`${USER_API_ROOT}/auth-status/`, opts).then(res => res.json());
+  },
+
+  // Logout (POST)
+  logout: () => {
+    const opts = authHeadersOrUndefined() || {};
+    return fetch(`${USER_API_ROOT}/logout/`, { ...opts, method: 'POST' }).then(res => res.json());
+  },
+};

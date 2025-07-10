@@ -24,13 +24,18 @@ interface CartResponse {
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { username } = useContext(UserContext); // Add this line to get username from context
+  const { username, first_name, last_name, isAuthenticated } = useContext(UserContext);
+  const displayName = (first_name || last_name) ? `${first_name || ''} ${last_name || ''}`.trim() : username;
   const [cartData, setCartData] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
     loadCartDetails();
-  }, []);
+  }, [isAuthenticated]);
 
   const loadCartDetails = async () => {
     try {
@@ -55,13 +60,13 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm mb-8">
+      <nav className="bg-white shadow-sm mb-6 lg:mb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <h1 className="text-2xl font-bold text-primary">ProLearn</h1>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600">Welcome, {username}</span>
-              <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-0 sm:h-16 space-y-4 sm:space-y-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-primary">ProLearn</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+              <span className="text-sm sm:text-base text-gray-600">Welcome, {displayName}</span>
+              <Button variant="secondary" size="small" onClick={() => navigate('/dashboard')}>
                 Back to Dashboard
               </Button>
             </div>
@@ -70,11 +75,11 @@ export default function Cart() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
             <Card>
-              <h2 className="text-2xl font-bold mb-6">Shopping Cart</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Shopping Cart</h2>
               {cartData?.cart_detail.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-600 mb-4">Your cart is empty</p>
@@ -83,23 +88,24 @@ export default function Cart() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {cartData?.cart_detail.map((item, idx) => (
-                    <div key={idx} className="flex space-x-4 border-b pb-6">
+                    <div key={idx} className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 border-b pb-4 sm:pb-6">
                       <img
                         src={item.image_url}
                         alt={item.title}
-                        className="w-48 h-32 object-cover rounded-lg"
+                        className="w-full sm:w-48 h-32 sm:h-32 object-cover rounded-lg"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                        <p className="text-gray-600 mb-2">
+                        <h3 className="font-semibold text-base sm:text-lg mb-2">{item.title}</h3>
+                        <p className="text-gray-600 text-sm mb-2">
                           by {item.author.first_name} {item.author.last_name}
                         </p>
-                        <div className="flex justify-between items-center">
-                          <span className="text-primary font-medium">${item.price}</span>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
+                          <span className="text-primary font-medium text-lg">${item.price}</span>
                           <Button
                             variant="secondary"
+                            size="small"
                             onClick={() => {
                               // Remove item from cart
                               const cartItems = JSON.parse(localStorage.getItem(`cart_${username}`) || '[]');
@@ -122,8 +128,8 @@ export default function Cart() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <Card className="sticky top-8">
-              <h2 className="text-xl font-bold mb-6">Order Summary</h2>
-              <div className="space-y-4 mb-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Order Summary</h2>
+              <div className="space-y-3 sm:space-y-4 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium">${cartData?.cart_total}</span>

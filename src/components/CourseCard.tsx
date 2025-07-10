@@ -28,27 +28,29 @@ export default function CourseCard({ course, onAddToCart }: CourseCardProps) {
       <img
         src={course.image_url}
         alt={course.title}
-        className="w-full h-48 object-cover"
+        className="w-full h-32 sm:h-40 lg:h-48 object-cover"
         onError={(e) => {
           console.error('Image failed to load:', course.image_url);
           e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Course+Image';
         }}
       />
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="font-bold text-lg mb-2 flex-grow">{course.title}</h3>
-        <p className="text-gray-600 text-sm mb-3">
+      <div className="p-3 sm:p-4 flex flex-col flex-grow">
+        <h3 className="font-bold text-sm sm:text-base lg:text-lg mb-2 flex-grow line-clamp-2">{course.title}</h3>
+        <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-3">
           by {course.author.first_name} {course.author.last_name}
         </p>
-        <div className="text-sm text-gray-500 mb-4">
+        <div className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">
           👥 {course.student_no} students
         </div>
-        <div className="flex justify-between items-center mt-auto">
-          <span className="text-primary font-bold text-xl">${course.price}</span>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mt-auto">
+          <span className="text-primary font-bold text-lg sm:text-xl">${course.price}</span>
           <Button 
+            size="small"
             onClick={(e) => {
               e.stopPropagation(); // Prevent card's onClick from firing
               onAddToCart();
             }}
+            className="w-full sm:w-auto"
           >
             Add to Cart
           </Button>

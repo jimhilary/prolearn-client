@@ -59,24 +59,24 @@ export default function SectorPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white shadow-sm mb-8">
+      <nav className="bg-white shadow-sm mb-6 lg:mb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <h1 className="text-3xl font-bold text-primary cursor-pointer" onClick={() => navigate('/dashboard')}>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-0 sm:h-20 space-y-4 sm:space-y-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary cursor-pointer" onClick={() => navigate('/dashboard')}>
               ProLearn
             </h1>
-            <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+            <Button variant="secondary" size="small" onClick={() => navigate('/dashboard')}>
               Back to Dashboard
             </Button>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">{sectorName || title}</h2>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+        <div className="mb-6 lg:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">{sectorName || title}</h2>
           {totalStudents > 0 && (
-            <p className="text-gray-600">Total students in this sector: {totalStudents.toLocaleString()}</p>
+            <p className="text-sm sm:text-base text-gray-600">Total students in this sector: {totalStudents.toLocaleString()}</p>
           )}
         </div>
         
@@ -85,7 +85,7 @@ export default function SectorPage() {
         ) : error ? (
           <div className="text-center py-12 text-red-600">{error}</div>
         ) : courses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {courses.map((course) => (
               <CourseCard
                 key={course.course_uuid}
