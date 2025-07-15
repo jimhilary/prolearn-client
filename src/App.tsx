@@ -15,9 +15,11 @@ import { userApi, getToken, saveToken, clearToken } from './services/api';
 // Define the context type
 interface UserContextType {
   username: string;
-  first_name?: string;
-  last_name?: string;
+  name?: string;
   email?: string;
+  id?: number;
+  created?: string;
+  updated?: string;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
@@ -44,7 +46,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       if (getToken()) {
         try {
           const profile = await userApi.profile();
-          if (profile && profile.username) {
+          if (profile && profile.name) {
             setUser(profile);
             setIsAuthenticated(true);
           } else {
@@ -69,10 +71,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const res = await userApi.login(email, password);
       if (res && res.token) {
         saveToken(res.token);
-        const profile = await userApi.profile();
-        setUser(profile);
-        setIsAuthenticated(true);
-        return true;
+        // Store user data from login response
+        if (res.user) {
+          setUser(res.user);
+          setIsAuthenticated(true);
+          return true;
+        }
       }
     } catch {}
     setUser(null);
@@ -86,10 +90,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const res = await userApi.signup(name, email, password);
       if (res && res.token) {
         saveToken(res.token);
-        const profile = await userApi.profile();
-        setUser(profile);
-        setIsAuthenticated(true);
-        return true;
+        // Store user data from register response
+        if (res.user) {
+          setUser(res.user);
+          setIsAuthenticated(true);
+          return true;
+        }
       }
     } catch {}
     setUser(null);
@@ -108,10 +114,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   return (
     <UserContext.Provider
       value={{
-        username: user?.username || '',
-        first_name: user?.first_name,
-        last_name: user?.last_name,
+        username: user?.name || '',
+        name: user?.name,
         email: user?.email,
+        id: user?.id,
+        created: user?.created,
+        updated: user?.updated,
         isAuthenticated,
         login,
         register,

@@ -152,7 +152,7 @@ export const userApi = {
       body: JSON.stringify({ email, password })
     }).then(res => res.json()),
 
-  // Get profile (requires auth)
+  // Get profile (requires auth) - expects same user object format
   profile: () => {
     const opts = authHeadersOrUndefined();
     return fetch(`${USER_API_ROOT}/profile/`, opts).then(res => res.json());

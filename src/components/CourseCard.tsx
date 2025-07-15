@@ -4,7 +4,7 @@ import Button from '@/components/Button';
 import Card from '@/components/Card';
 
 interface CourseCardProps {
-  course: Course;
+  course: Course & { image?: string };
   onAddToCart: () => void;
 }
 
@@ -26,13 +26,9 @@ export default function CourseCard({ course, onAddToCart }: CourseCardProps) {
       onClick={() => navigate(`/course/${course.course_uuid}`)}
     >
       <img
-        src={course.image_url}
+        src={course.image || course.image_url}
         alt={course.title}
         className="w-full h-32 sm:h-40 lg:h-48 object-cover"
-        onError={(e) => {
-          console.error('Image failed to load:', course.image_url);
-          e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Course+Image';
-        }}
       />
       <div className="p-3 sm:p-4 flex flex-col flex-grow">
         <h3 className="font-bold text-sm sm:text-base lg:text-lg mb-2 flex-grow line-clamp-2">{course.title}</h3>

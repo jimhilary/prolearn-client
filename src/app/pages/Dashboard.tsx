@@ -8,11 +8,20 @@ import CourseCard from '@/components/CourseCard';
 import { api } from '@/services/api';
 import type { Sector, Course } from '@/services/api';
 import { UserContext } from '@/App';
+import mlImg from '@/assets/course_images/Machine-Learning1.jpg';
+import pythonImg from '@/assets/course_images/python.jpg';
+import webDevImg from '@/assets/course_images/web-dev.jpg';
+
+const imageMap: Record<string, string> = {
+  'Introductory Machine Learning': mlImg,
+  'Python Programing for Beginners': pythonImg,
+  'Web Development: Beginner to Advance': webDevImg,
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { username, first_name, last_name, isAuthenticated } = useContext(UserContext);
-  const displayName = (first_name || last_name) ? `${first_name || ''} ${last_name || ''}`.trim() : username;
+  const { username, name, isAuthenticated } = useContext(UserContext);
+  const displayName = name || username;
 
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -137,7 +146,7 @@ export default function Dashboard() {
             {searchResults.map((course) => (
               <CourseCard
                 key={course.course_uuid}
-                course={course}
+                course={{ ...course, image: imageMap[course.title] }}
                 onAddToCart={() => addToCart(course.course_uuid)}
               />
             ))}
@@ -164,7 +173,7 @@ export default function Dashboard() {
                 {sector.featured_course.map((course) => (
                   <CourseCard
                     key={course.course_uuid}
-                    course={course}
+                    course={{ ...course, image: imageMap[course.title] }}
                     onAddToCart={() => addToCart(course.course_uuid)}
                   />
                 ))}

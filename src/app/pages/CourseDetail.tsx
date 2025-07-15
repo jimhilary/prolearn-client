@@ -8,6 +8,15 @@ import Input from '@/components/Input';
 import { api } from '@/services/api';
 import type { CourseDetail } from '@/services/api';
 import { UserContext } from '@/App'; // Add UserContext import
+import mlImg from '@/assets/course_images/Machine-Learning1.jpg';
+import pythonImg from '@/assets/course_images/python.jpg';
+import webDevImg from '@/assets/course_images/web-dev.jpg';
+
+const imageMap: Record<string, string> = {
+  'Introductory Machine Learning': mlImg,
+  'Python Programing for Beginners': pythonImg,
+  'Web Development: Beginner to Advance': webDevImg,
+};
 
 export default function CourseDetailPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -147,7 +156,7 @@ export default function CourseDetailPage() {
           {/* Course Purchase Card */}
           <div className="lg:col-span-1">
             <Card className="sticky top-8">
-              <img src={course.image_url} alt={course.title} className="rounded-lg mb-4 w-full h-32 sm:h-48 object-cover" />
+              <img src={imageMap[course.title]} alt={course.title} className="rounded-lg mb-4 w-full h-32 sm:h-48 object-cover" />
               <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">${course.price}</div>
               <Button
                 className="w-full mb-3"

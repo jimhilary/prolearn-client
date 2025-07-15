@@ -5,6 +5,15 @@ import type { Course, SectorCoursesResponse } from '@/services/api';
 import { UserContext } from '@/App';
 import CourseCard from '@/components/CourseCard';
 import Button from '@/components/Button';
+import mlImg from '@/assets/course_images/Machine-Learning.jpg';
+import pythonImg from '@/assets/course_images/python.jpg';
+import webDevImg from '@/assets/course_images/web-dev.jpg';
+
+const imageMap: Record<string, string> = {
+  'Introductory Machine Learning': mlImg,
+  'Python Programing for Beginners': pythonImg,
+  'Web Development: Beginner to Advance': webDevImg,
+};
 
 export default function SectorPage() {
   const { sectorId } = useParams<{ sectorId: string }>();
@@ -89,7 +98,7 @@ export default function SectorPage() {
             {courses.map((course) => (
               <CourseCard
                 key={course.course_uuid}
-                course={course}
+                course={{ ...course, image: imageMap[course.title] }}
                 onAddToCart={() => addToCart(course.course_uuid)}
               />
             ))}

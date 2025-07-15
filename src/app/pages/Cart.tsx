@@ -6,6 +6,15 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import { api } from '@/services/api';
 import { UserContext } from '@/App';
+import mlImg from '@/assets/course_images/Machine-Learning.jpg';
+import pythonImg from '@/assets/course_images/python.jpg';
+import webDevImg from '@/assets/course_images/web-dev.jpg';
+
+const imageMap: Record<string, string> = {
+  'Introductory Machine Learning': mlImg,
+  'Python Programing for Beginners': pythonImg,
+  'Web Development: Beginner to Advance': webDevImg,
+};
 
 interface CartItem {
   title: string;
@@ -24,8 +33,8 @@ interface CartResponse {
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { username, first_name, last_name, isAuthenticated } = useContext(UserContext);
-  const displayName = (first_name || last_name) ? `${first_name || ''} ${last_name || ''}`.trim() : username;
+  const { username, name, isAuthenticated } = useContext(UserContext);
+  const displayName = name || username;
   const [cartData, setCartData] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -92,7 +101,7 @@ export default function Cart() {
                   {cartData?.cart_detail.map((item, idx) => (
                     <div key={idx} className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 border-b pb-4 sm:pb-6">
                       <img
-                        src={item.image_url}
+                        src={imageMap[item.title]}
                         alt={item.title}
                         className="w-full sm:w-48 h-32 sm:h-32 object-cover rounded-lg"
                       />
