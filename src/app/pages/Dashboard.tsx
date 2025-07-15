@@ -23,6 +23,22 @@ export default function Dashboard() {
   const { username, name, isAuthenticated } = useContext(UserContext);
   const displayName = name || username;
 
+  // Profile image logic (localStorage or state)
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  useEffect(() => {
+    const img = localStorage.getItem(`profile_image_${username}`);
+    setProfileImage(img);
+  }, [username]);
+  const displayLetter = (name && name.length > 0) ? name[0].toUpperCase() : (username ? username[0].toUpperCase() : '?');
+
+  // Debug logs for troubleshooting profile icon
+  console.log('DEBUG Dashboard:', {
+    profileImage,
+    displayLetter,
+    username,
+    name
+  });
+
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<Course[]>([]);
@@ -216,6 +232,18 @@ export default function Dashboard() {
                     </span>
                   )}
                 </Button>
+                {/* Profile Icon */}
+                <div
+                  className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden border border-gray-300 hover:shadow"
+                  onClick={() => navigate('/user-dashboard')}
+                  title="View Profile"
+                >
+                  {profileImage ? (
+                    <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-base font-bold text-primary">{displayLetter}</span>
+                  )}
+                </div>
                 <Button variant="secondary" size="small" onClick={() => navigate('/')}>Logout</Button>
               </div>
             </div>
@@ -275,6 +303,18 @@ export default function Dashboard() {
                   </span>
                 )}
               </Button>
+              {/* Profile Icon */}
+              <div
+                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden border border-gray-300 hover:shadow"
+                onClick={() => navigate('/user-dashboard')}
+                title="View Profile"
+              >
+                {profileImage ? (
+                  <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-lg font-bold text-primary">{displayLetter}</span>
+                )}
+              </div>
               <Button variant="secondary" onClick={() => navigate('/')}>Logout</Button>
             </div>
           </div>

@@ -9,6 +9,7 @@ import CourseDetail from './app/pages/CourseDetail';
 import Cart from './app/pages/Cart';
 import SectorPage from './app/pages/Sector';
 import NotFound from './app/pages/NotFound';
+import UserDashboard from './app/pages/UserDashboard';
 import './App.css';
 import { userApi, getToken, saveToken, clearToken } from './services/api';
 
@@ -142,6 +143,7 @@ export default function App() {
         <Route path="/course/:courseId" element={<CourseDetail />} />
         <Route path="/sector/:sectorId" element={<SectorPage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </UserProvider>
