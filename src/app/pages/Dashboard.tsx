@@ -11,11 +11,13 @@ import { UserContext } from '@/App';
 import mlImg from '@/assets/course_images/Machine-Learning1.jpg';
 import pythonImg from '@/assets/course_images/python.jpg';
 import webDevImg from '@/assets/course_images/web-dev.jpg';
+import bigDataImg from '@/assets/course_images/WhatisBigData.jpg';
 
 const imageMap: Record<string, string> = {
   'Introductory Machine Learning': mlImg,
   'Python Programing for Beginners': pythonImg,
   'Web Development: Beginner to Advance': webDevImg,
+  'Data Analytics with Python':bigDataImg,
 };
 
 export default function Dashboard() {
